@@ -6,21 +6,29 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
+import br.com.caio.loja.dao.CategoriaDAO;
+import br.com.caio.loja.dao.ProdutoDAO;
+import br.com.caio.loja.modelo.Categoria;
 import br.com.caio.loja.modelo.Produto;
+import br.com.caio.loja.util.JPAUtil;
 
 public class CadastroDeProduto {
 
 	public static void main(String[] args) {
 		
-		Produto celular = new Produto();
-		celular.setNome("Xiaomi redmi 8");
-		celular.setDescricao("Muito Legal");
-		celular.setPreco(new BigDecimal("800"));
+		Categoria ceulares = new Categoria("CELULARES");
 		
-		EntityManagerFactory factory = Persistence.createEntityManagerFactory("loja");
-		EntityManager em = factory.createEntityManager();
+		Produto celular = new Produto("Xiaomi redmi 8", "Muito Legal", new BigDecimal("800"), ceulares);
+		
+		EntityManager em = JPAUtil.getEntityManager();
+		ProdutoDAO produtoDao = new ProdutoDAO(em);
+		CategoriaDAO categoriaDao = new CategoriaDAO(em);
+		
 		em.getTransaction().begin();
-		em.persist(celular);
+		
+		categoriaDao.Cadastrar(ceulares);
+		produtoDao.cadastrar(celular);
+		
 		em.getTransaction().commit();
 		em.close();
 		
