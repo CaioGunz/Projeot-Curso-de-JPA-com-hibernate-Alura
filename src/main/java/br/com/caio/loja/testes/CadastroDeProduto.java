@@ -1,10 +1,9 @@
 package br.com.caio.loja.testes;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 
 import br.com.caio.loja.dao.CategoriaDAO;
 import br.com.caio.loja.dao.ProdutoDAO;
@@ -16,6 +15,21 @@ public class CadastroDeProduto {
 
 	public static void main(String[] args) {
 		
+		cadastrarProduto();
+		EntityManager em = JPAUtil.getEntityManager();
+		ProdutoDAO produtoDao = new ProdutoDAO(em);
+		
+		Produto p = produtoDao.buscarPorId(1l);
+		System.out.println(p.getPreco());
+		
+		List<Produto> todos = produtoDao.buscarPorNomeDaCategoria("CELULARES");
+		todos.forEach(p2 -> System.out.println(p.getNome()));
+		
+		BigDecimal precoDoProduto = produtoDao.buscarPrecoDoProdutoComNome("Xiaomi redmi 8");
+		System.out.println(precoDoProduto);
+	}
+
+	private static void cadastrarProduto() {
 		Categoria ceulares = new Categoria("CELULARES");
 		
 		Produto celular = new Produto("Xiaomi redmi 8", "Muito Legal", new BigDecimal("800"), ceulares);
@@ -31,7 +45,6 @@ public class CadastroDeProduto {
 		
 		em.getTransaction().commit();
 		em.close();
-		
 	}
 	
 }
